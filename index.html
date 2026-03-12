@@ -1,11 +1,13 @@
 <!doctype html>
 <html lang="es">
+
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Galería Dinámica</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
+
 <body>
   <header class="top">
     <h1>Galería Dinámica</h1>
@@ -17,6 +19,12 @@
       <div class="frame">
         <img id="heroImg" alt="Imagen principal" />
         <button id="likeBtn" class="like" type="button" aria-pressed="false">♡</button>
+        <footer class="bottom muted">
+          <div class="controls">
+            <button id="prevBtn" type="button">←</button>
+            <button id="nextBtn" type="button">→</button>
+            <button id="playBtn" type="button">▷</button>
+          </div>
       </div>
 
       <div class="meta">
@@ -34,11 +42,9 @@
       <div id="thumbs" class="thumbs"></div>
     </aside>
   </main>
-
-  <footer class="bottom muted">
-    Teclas: ← → para navegar (se agrega en sesión 2)
   </footer>
 
   <script src="app.js"></script>
 </body>
+
 </html>
