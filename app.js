@@ -7,7 +7,7 @@ const data = [
   { id: "p06", title: "Ruta", desc: "Camino en perspectiva", src: "https://picsum.photos/id/1005/1200/675" }
 ];
 
-
+//recuperar elementos del DOM
 const thumbs = document.querySelector("#thumbs"); //miniaturas
 const heroImg = document.querySelector("#heroImg"); //imagen principal
 const heroTitle = document.querySelector("#heroTitle"); //titulo de la imagen
@@ -29,6 +29,37 @@ function renderThumbs() {
       </article>
     `;
   }).join("");
+}
+
+function renderHero(index) {
+  const item = data[index];
+
+  //actualizar la imagen principal
+  heroImg.src = item.src;
+  heroImge.alt = item.title;
+
+  //actualizar el titulo y la descripcion
+  heroTitle.textContent = item.title;
+  heroDesc.textContent = item.desc; 
+  
+  //actualizar el contador
+  counter.textContent = `${index + 1} / ${data.length}`;
+
+  //recorrer miniaturas para marcar la activa
+  document.querySelectorAll(".thumb").forEach((thumb, i) => {
+    thumb.classList.toggle("active", i === index);
+  });
+
+  //realizar si la imagen actual tiene like
+  const isLiked = likes[item.id] === true; 
+
+  //cambiar el simbolo del boton
+  likeBtn.textContent = isLiked ? "❤️" : "🤍";
+
+  //aplicar o quitar la clase visual
+  likeBtn.classList.toggle("on", isLiked);
+
+  
 }
 
 renderThumbs(); //llamar a la función para mostrar las miniaturas
