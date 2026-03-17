@@ -1,9 +1,9 @@
 const data = [
-  { id: "p01", title: "Aurora", desc: "Luz suave y cielo polar", src: "https://picsum.photos/id/1018/1200/675" },
-  { id: "p02", title: "Montaña", desc: "Rocas y niebla", src: "https://picsum.photos/id/1015/1200/675" },
-  { id: "p03", title: "Ciudad", desc: "Atardecer urbano", src: "https://picsum.photos/id/1011/1200/675" },
-  { id: "p04", title: "Bosque", desc: "Verde profundo", src: "https://picsum.photos/id/1020/1200/675" },
-  { id: "p05", title: "Mar", desc: "Horizonte y calma", src: "https://picsum.photos/id/1016/1200/675" },
+  { id: "p01", title: "Montaña", desc: "Rocas y niebla", src: "https://picsum.photos/id/1018/1200/675" },
+  { id: "p02", title: "Mar", desc: "Horizontes y calma", src: "https://picsum.photos/id/1015/1200/675" },
+  { id: "p03", title: "Rio", desc: "Tranquilidad", src: "https://picsum.photos/id/1011/1200/675" },
+  { id: "p04", title: "Bosque", desc: " Alaska salvaje", src: "https://picsum.photos/id/1020/1200/675" },
+  { id: "p05", title: "Cañon", desc: " Desierto rojizo", src: "https://picsum.photos/id/1016/1200/675" },
   { id: "p06", title: "Ruta", desc: "Camino en perspectiva", src: "https://picsum.photos/id/1005/1200/675" }
 ];
 
@@ -16,8 +16,8 @@ const counter = document.querySelector("#counter"); //controlador de imagenes
 const likeBtn = document.querySelector("#likeBtn"); //boton de "me gusta"
 
 //trabajar con el estado de la aplicacion
-let currentIndex = 0; //indice de la imagen actual
-const likes ={}; //objeto para almacenar los "me gusta" por imagen
+let currentIndex = 0;//indice de la imagen actual
+const likes = {}; //objeto para almacenar los "me gusta" por imagen
 
 // renderizar las miniaturas
 function renderThumbs() {
@@ -36,12 +36,12 @@ function renderHero(index) {
 
   //actualizar la imagen principal
   heroImg.src = item.src;
-  heroImge.alt = item.title;
+  heroImg.alt = item.title;
 
   //actualizar el titulo y la descripcion
   heroTitle.textContent = item.title;
-  heroDesc.textContent = item.desc; 
-  
+  heroDesc.textContent = item.desc;
+
   //actualizar el contador
   counter.textContent = `${index + 1} / ${data.length}`;
 
@@ -51,15 +51,23 @@ function renderHero(index) {
   });
 
   //realizar si la imagen actual tiene like
-  const isLiked = likes[item.id] === true; 
+  const isLiked = likes[item.id] === true;
 
   //cambiar el simbolo del boton
   likeBtn.textContent = isLiked ? "❤️" : "🤍";
 
   //aplicar o quitar la clase visual
   likeBtn.classList.toggle("on", isLiked);
-
-  
 }
+ 
+  //listener para clicks en las miniaturas
+  thumbs.addEventListener("click", (e) => {
+    const thumb = e.target.closest(".thumb");
+    if (!thumb) return; //si no se hizo click en una miniatura, salir
 
-renderThumbs(); //llamar a la función para mostrar las miniaturas
+    currentIndex = Number(thumb.dataset.index); //actualizar el indice actual
+    renderHero(currentIndex); //renderizar la imagen principal
+  });
+
+  renderThumbs(); //llamar a la función para mostrar las miniaturas
+  renderHero(currentIndex); // mostrar la imagen inicial
