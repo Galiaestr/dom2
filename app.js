@@ -69,5 +69,17 @@ function renderHero(index) {
     renderHero(currentIndex); //renderizar la imagen principal
   });
 
+  //listener para el boton de "me gusta
+  likeBtn.addEventListener("click", () => {
+    const currentItem = data[currentIndex]; 
+     //alternar el estado de "me gusta" para la imagen actual
+    likes[currentItem.id] = !likes[currentItem.id];
+
+    const isLiked = likes[currentItem.id]; //verificar el nuevo estado
+    likeBtn.textContent = isLiked ? "❤️" : "🤍"; 
+    likeBtn.classList.toggle("on", isLiked); //aplicar o quitar la clase visual
+    likeBtn.setAttribute("aria-pressed", isLiked); //actualizar el atributo aria-pressed para accesibilidad
+  });
+
   renderThumbs(); //llamar a la función para mostrar las miniaturas
   renderHero(currentIndex); // mostrar la imagen inicial
