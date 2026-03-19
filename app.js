@@ -23,7 +23,7 @@ const playBtn = document.querySelector("#playBtn"); //boton de "reproducir"
 let currentIndex = 0;//indice de la imagen actual
 const likes = {}; //objeto para almacenar los "me gusta" por imagen
 
-let autoPlayId= null; //variable para almacenar el id del intervalo de autoplay
+let autoPlayId = null; //variable para almacenar el id del intervalo de autoplay
 let isPlaying = false; //estado de reproducción automática
 const AUTO_TIME = 1500; //tiempo entre cambios automaticos (3segundos)
 
@@ -68,33 +68,88 @@ function renderHero(index) {
   //aplicar o quitar la clase visual
   likeBtn.classList.toggle("on", isLiked);
 }
- 
-  //listener para clicks en las miniaturas
-  thumbs.addEventListener("click", (e) => {
-    const thumb = e.target.closest(".thumb");
-    if (!thumb) return; //si no se hizo click en una miniatura, salir
 
-    currentIndex = Number(thumb.dataset.index); //actualizar el indice actual
-    renderHero(currentIndex); //renderizar la imagen principal
-  });
+//listener para clicks en las miniaturas
+thumbs.addEventListener("click", (e) => {
+  const thumb = e.target.closest(".thumb");
+  if (!thumb) return; //si no se hizo click en una miniatura, salir
 
-  //listener para el boton de "me gusta
-  likeBtn.addEventListener("click", () => {
-    const currentItem = data[currentIndex]; 
-     //alternar el estado de "me gusta" para la imagen actual
-    likes[currentItem.id] = !likes[currentItem.id];
+  currentIndex = Number(thumb.dataset.index); //actualizar el indice actual
+  renderHero(currentIndex); //renderizar la imagen principal
+});
 
-    const isLiked = likes[currentItem.id]; //verificar el nuevo estado
-    likeBtn.textContent = isLiked ? "❤️" : "🤍"; 
-    likeBtn.classList.toggle("on", isLiked); //aplicar o quitar la clase visual
-    likeBtn.setAttribute("aria-pressed", isLiked); //actualizar el atributo aria-pressed para accesibilidad
-  });
+//listener para el boton de "me gusta
+likeBtn.addEventListener("click", () => {
+  const currentItem = data[currentIndex];
+  //alternar el estado de "me gusta" para la imagen actual
+  likes[currentItem.id] = !likes[currentItem.id];
 
-  //cambiar el boton de play a pause
-  function updatePlayButton() {
-    playBtn.textContent = isPlaying ? "⏸️" : "▶️";
-    playBtn.dataset.state = isPlaying ? "pause" : "play";
+  const isLiked = likes[currentItem.id]; //verificar el nuevo estado
+  likeBtn.textContent = isLiked ? "❤️" : "🤍";
+  likeBtn.classList.toggle("on", isLiked); //aplicar o quitar la clase visual
+  likeBtn.setAttribute("aria-pressed", isLiked); //actualizar el atributo aria-pressed para accesibilidad
+});
+
+//cambiar el boton de play a pause
+function updatePlayButton() {
+  playBtn.textContent = isPlaying ? "⏸️" : "▶️";
+  playBtn.dataset.state = isPlaying ? "pause" : "play";
+}
+
+function changeSlide(newIndex) {
+  heroImg.classList.add("fade-out"); //agregar clase de animaciónv de salida
+  setTimeout(() => {
+    currentIndex = newIndex; //actualizar el indice actual 
+    renderHero(currentIndex); //renderizar la nueva imagen principal
+    heroImg.classList.remove("fade-out"); //quitar clase para animación de salida
+  }, 350);
+}
+
+function nextSlide() {
+  const newIndex = (currentIndex + 1) % data.length; //calcular el indice devla siguiente imagen
+  changeSlide(newIndex);
+}
+
+function prevSlide() {
+  const newIndex = (currentIndex - 1 + data.length) % data.length; // calcular
+  changeSlide(newIndex);
+}
+
+function startAutoPlay() {
+  autoPlayId = setInterval(() => {
+    nextSlide();
+  }, AUTO_TIME);
+  isPlaying = true;
+  updatePlayButton();
+}
+
+function stopAutoPlay() {
+  clearInterval(autoPlayId);
+  autoPlayId = null;
+  isPlaying = false;
+  updatePlayButton();
+}
+
+function toggleAutoPlay() {
+  if (isPlaying) {
+    stopAutoPlay();
+  } else {
+    startAutoPlay();
   }
+}
 
-  renderThumbs(); //llamar a la función para mostrar las miniaturas
-  renderHero(currentIndex); // mostrar la imagen inicial
+nextBtn.addEventListener("click", nextSlide); 
+prevBtn.addEventListener("click", prevSlide);
+playBtn.addEventListener("click", toggleAutoPlay);
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowRight") {
+    nextSlide();
+  } else if (e.key === "ArrowLeft") {
+    prevSlide();
+  }
+});
+
+
+renderThumbs(); //llamar a la función para mostrar las miniaturas
+renderHero(currentIndex); // mostrar la imagen inicial
