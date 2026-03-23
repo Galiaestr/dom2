@@ -32,7 +32,7 @@ const AUTO_TIME = 2500; //tiempo entre cambios automaticos (2 segundos y medio)
 //se intentan buscar, pero si no estan se crearan
 //usando JS
 let dots = document.querySelector("#dots");
-let track = document.querySelector("#.track");
+let track = document.querySelector(".track");
 
 //variables para detectar swipe (deslizamiento)
 let startX = 0;
@@ -41,6 +41,20 @@ let isDragging = false;
 let moved = false;
 //distancia minima para considerar un swipe  
 const SWIPE_THRESHOLD = 50;
+
+//para usar el modal
+let modal = null;
+let modalImg = null;
+let modalTitle = null;
+let modalDesc = null;
+let modalCounter = null;
+let modalPrevBtn = null;
+let modalNextBtn = null;
+let modalCloseBtn = null;
+let zoomInBtn = null;
+let zoomOutBtn = null;
+let zoomResetBtn = null;
+let modalScale = 1;  
 
 //vrear un track del carrusel
 //crear un conenedor -track que tendra todas las imagenes
@@ -78,17 +92,50 @@ function createDots() {
   dots.innerHTML = data.map((_, index) => {
     return `
       <button
-      class = "dot ${index === currentIndex ?? "active"}
+      class = "dot ${index === currentIndex ?? "active"}"
       type = "button"
       data-index = "${index}"
       aria-label = "Ir a la imagen ${index + 1}">
       </button>
     `;
   }).join("");
+ }
 
+  function updateTrack(animate = true){
+    if (!track) return;
 
+    track.style.transition = animate ? "transform .45s ease" : "none";
+    track.style.transform = `translateX(-${currentIndex * 100}%)`; 
 }
 
+function updateMeta(){
+  const item = data[currentIndex];
+  heroTitle.textContent = item.title;
+  heroDesc.textContent = item.desc;
+  counter.textContent = `${currentIndex + 1} / ${data.length}`;
+}
+
+function updateThumbs(){
+  document.querySelectorAll(".thumb").forEach((thumb, index) => {
+    thumb.classList.toggle("active", index === currentIndex);
+  });
+}
+
+function updateDots(){
+  document.querySelectorAll(".dot").forEach((dot, index) => {
+    dotclassList.toggle("active", index === currentIndex);
+    dot.setAttribute("aria-pressed", index === currentIndex);
+  });
+}
+
+function updateLikeBtn(){
+  const currentItem = data[currentIndex];
+  const isLiked = likes[currentItem.id]; //verificar el nuevo estado
+  likeBtn.textContent = isLiked ? "❤️" : "🤍";
+  likeBtn.classList.toggle("on", isLiked); //aplicar o quitar la clase visual
+  likeBtn.setAttribute("aria-pressed", isLiked); //actualizar el atributo aria-pressed para accesibilidad
+
+}
 
 // renderizar las miniaturas
 function renderThumbs() {
@@ -146,11 +193,8 @@ likeBtn.addEventListener("click", () => {
   const currentItem = data[currentIndex];
   //alternar el estado de "me gusta" para la imagen actual
   likes[currentItem.id] = !likes[currentItem.id];
-
-  const isLiked = likes[currentItem.id]; //verificar el nuevo estado
-  likeBtn.textContent = isLiked ? "❤️" : "🤍";
-  likeBtn.classList.toggle("on", isLiked); //aplicar o quitar la clase visual
-  likeBtn.setAttribute("aria-pressed", isLiked); //actualizar el atributo aria-pressed para accesibilidad
+  updateLikeBtn();
+  
 });
 
 //cambiar el boton de play a pause
@@ -199,6 +243,14 @@ function toggleAutoPlay() {
   } else {
     startAutoPlay();
   }
+}
+
+function renderAll(animate = true){
+  updateTrack(animate);
+  updateDots();
+  updateThumbs();
+  updateDots();
+  updateLikeButton();
 }
 
 nextBtn.addEventListener("click", nextSlide);
