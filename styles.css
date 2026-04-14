@@ -43,3 +43,8 @@ body{margin:0;font-family:system-ui,Segoe UI,Roboto,Arial;background:var(--bg);c
 .frame img.fade-out{
   opacity: 0;
 }
+
+.thumbs-carousel {
+  display: flex;
+  gap: 0.5rem;
+}

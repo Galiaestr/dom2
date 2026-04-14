@@ -54,7 +54,7 @@ let modalCloseBtn = null;
 let zoomInBtn = null;
 let zoomOutBtn = null;
 let zoomResetBtn = null;
-let modalScale = 1;  
+let modalScale = 1;
 
 //vrear un track del carrusel
 //crear un conenedor -track que tendra todas las imagenes
@@ -99,36 +99,36 @@ function createDots() {
       </button>
     `;
   }).join("");
- }
-
-  function updateTrack(animate = true){
-    if (!track) return;
-
-    track.style.transition = animate ? "transform .45s ease" : "none";
-    track.style.transform = `translateX(-${currentIndex * 100}%)`; 
 }
 
-function updateMeta(){
+function updateTrack(animate = true) {
+  if (!track) return;
+
+  track.style.transition = animate ? "transform .45s ease" : "none";
+  track.style.transform = `translateX(-${currentIndex * 100}%)`;
+}
+
+function updateMeta() {
   const item = data[currentIndex];
   heroTitle.textContent = item.title;
   heroDesc.textContent = item.desc;
   counter.textContent = `${currentIndex + 1} / ${data.length}`;
 }
 
-function updateThumbs(){
+function updateThumbs() {
   document.querySelectorAll(".thumb").forEach((thumb, index) => {
     thumb.classList.toggle("active", index === currentIndex);
   });
 }
 
-function updateDots(){
+function updateDots() {
   document.querySelectorAll(".dot").forEach((dot, index) => {
     dotclassList.toggle("active", index === currentIndex);
     dot.setAttribute("aria-pressed", index === currentIndex);
   });
 }
 
-function updateLikeBtn(){
+function updateLikeBtn() {
   const currentItem = data[currentIndex];
   const isLiked = likes[currentItem.id]; //verificar el nuevo estado
   likeBtn.textContent = isLiked ? "❤️" : "🤍";
@@ -139,7 +139,7 @@ function updateLikeBtn(){
 
 // renderizar las miniaturas
 function renderThumbs() {
-  thumbs.innerHTML = data.map((item, index) => {
+  const thumbsHTML = data.map((item, index) => {
     return `
       <article class="thumb ${index === currentIndex ? "active" : ""}" data-index="${index}">
         <span class="badge">${index + 1}</span>
@@ -147,7 +147,19 @@ function renderThumbs() {
       </article>
     `;
   }).join("");
+
+  // Pintar en ambos contenedores
+  document.querySelector("#thumbs").innerHTML = thumbsHTML;
+  document.querySelector("#thumbsTop").innerHTML = thumbsHTML;
 }
+
+document.querySelector("#thumbsTop").addEventListener("click", (e) => {
+  const thumb = e.target.closest(".thumb");
+  if (!thumb) return;
+  currentIndex = Number(thumb.dataset.index);
+  renderHero(currentIndex);
+});
+
 
 //funcion para mostrar
 function renderHero(index) {
@@ -194,7 +206,7 @@ likeBtn.addEventListener("click", () => {
   //alternar el estado de "me gusta" para la imagen actual
   likes[currentItem.id] = !likes[currentItem.id];
   updateLikeBtn();
-  
+
 });
 
 //cambiar el boton de play a pause
@@ -245,7 +257,7 @@ function toggleAutoPlay() {
   }
 }
 
-function renderAll(animate = true){
+function renderAll(animate = true) {
   updateTrack(animate);
   updateDots();
   updateThumbs();
